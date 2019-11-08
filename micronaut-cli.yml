@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: com.bogdan
+---
+testFramework: junit
+sourceLanguage: java
