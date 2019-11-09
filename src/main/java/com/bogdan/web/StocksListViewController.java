@@ -12,12 +12,12 @@ import javax.inject.Inject;
 import java.util.List;
 
 @Controller
-class ViewsController {
+class StocksListViewController {
 
   @Inject
   private StocksService stocksService;
 
-  @View("home")
+  @View("stocksList")
   @Get()
   public HttpResponse listStocks() {
     List<StockDto> stocks = stocksService.getStocks(0, 20); //TODO implement pagination

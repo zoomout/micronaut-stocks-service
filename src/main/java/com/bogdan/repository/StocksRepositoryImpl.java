@@ -1,6 +1,7 @@
 package com.bogdan.repository;
 
 import com.bogdan.domain.StockEntity;
+import com.bogdan.error.EntityNotFoundException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,10 +29,7 @@ public class StocksRepositoryImpl implements StocksRepository {
 
   @Override
   public StockEntity retrieve(int id) {
-    if (id >= stocks.size()) {
-      return null; // TODO throw exception
-    }
-    return stocks.get(id);
+    return stocks.get(validated(id));
   }
 
   @Override
@@ -43,10 +41,7 @@ public class StocksRepositoryImpl implements StocksRepository {
 
   @Override
   public synchronized StockEntity update(int id, StockEntity stockEntity) {
-    if (id >= stocks.size()) {
-      return null; // TODO throw exception
-    }
-    StockEntity current = stocks.get(id);
+    StockEntity current = stocks.get(validated(id));
     StockEntity updated = new StockEntity(
         current.getId(),
         stockEntity.getName() != null ? stockEntity.getName() : current.getName(),
@@ -59,9 +54,13 @@ public class StocksRepositoryImpl implements StocksRepository {
 
   @Override
   public StockEntity delete(int id) {
+    return stocks.remove(validated(id));
+  }
+
+  private int validated(final int id) {
     if (id >= stocks.size()) {
-      return null; // TODO throw exception
+      throw new EntityNotFoundException("stock", id);
     }
-    return stocks.remove(id);
+    return id;
   }
 }
