@@ -2,6 +2,7 @@ plugins {
     id "net.ltgt.apt-eclipse" version "0.21"
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "application"
+    id 'jacoco'
 }
 
 version "0.1"
@@ -64,6 +65,27 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs.add('-parameters')
 }
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        html.destination file("${buildDir}/reports/jacoco")
+    }
+
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(
+                    dir: it,
+                    exclude: [
+                            '**/Application**',
+                    ]
+            )
+        })
+    }
+}
+
+tasks.jacocoTestReport.dependsOn(test)
+tasks.assemble.dependsOn(jacocoTestReport)
 
 shadowJar {
     mergeServiceFiles()
