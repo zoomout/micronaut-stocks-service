@@ -2,13 +2,19 @@ package com.bogdan.dto;
 
 import io.micronaut.core.annotation.Introspected;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.Instant;
 
 @Introspected
 public class StockDto {
 
   private Integer id;
+  @NotEmpty
   private String name;
+  @PositiveOrZero
+  @NotNull
   private Double currentPrice;
   private Instant lastUpdate;
 

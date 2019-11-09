@@ -34,7 +34,7 @@ public class StocksController {
   @Post
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public HttpResponse post(@Body StockDto stockDto) {
+  public HttpResponse post(@Valid @Body StockDto stockDto) {
     return HttpResponse.created(stocksService.createStock(stockDto));
   }
 

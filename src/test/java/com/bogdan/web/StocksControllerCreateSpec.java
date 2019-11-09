@@ -17,8 +17,9 @@ import static io.micronaut.http.HttpStatus.BAD_REQUEST;
 import static io.micronaut.http.HttpStatus.CREATED;
 import static io.micronaut.http.MediaType.APPLICATION_JSON;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.text.MatchesPattern.matchesPattern;
 
 @MicronautTest
@@ -78,23 +79,36 @@ class StocksControllerCreateSpec extends BaseStocksControllerSpec {
     return Stream.of(
         Arguments.of(
             "",
-            matchesPattern("Required Body (.*) not specified")
+            matchesPattern("(.*)Required Body (.*) not specified(.*)")
         ),
         Arguments.of(
             "invalid json",
-            startsWith("Invalid JSON")
+            containsString("Invalid JSON")
         ),
         Arguments.of(
             new JSONObject().toString(), // missing name and currentPrice
-            matchesPattern("(.*) must not be empty")
+            both(containsString("currentPrice: must not be null"))
+                .and(containsString("name: must not be empty"))
         ),
         Arguments.of(
             new JSONObject().accumulate("name", "name_1").toString(), // missing currentPrice
-            matchesPattern("oh no currentPrice is missing!")
+            containsString("currentPrice: must not be null")
         ),
         Arguments.of(
             new JSONObject().accumulate("currentPrice", 1.23).toString(), // missing name
-            matchesPattern("oh no name is missing!")
+            containsString("name: must not be empty")
+        ),
+        Arguments.of(
+            new JSONObject()
+                .accumulate("name", "name_1")
+                .accumulate("currentPrice", -1.1).toString(), // negative currentPrice
+            containsString("currentPrice: must be greater than or equal to 0")
+        ),
+        Arguments.of(
+            new JSONObject()
+                .accumulate("name", "name_1")
+                .accumulate("currentPrice", "stringIsInvalidType").toString(), // invalid currentPrice type
+            containsString("not a valid Double value")
         )
     );
   }
@@ -108,7 +122,7 @@ class StocksControllerCreateSpec extends BaseStocksControllerSpec {
         .when()
         .post(stocksApi())
         .then().statusCode(is(BAD_REQUEST.getCode()))
-        .and().body("message", matcher);
+        .and().body(matcher);
   }
 
 }
