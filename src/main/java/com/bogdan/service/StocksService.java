@@ -1,6 +1,6 @@
 package com.bogdan.service;
 
-import com.bogdan.domain.Stock;
+import com.bogdan.domain.StockEntity;
 import com.bogdan.dto.StockDto;
 import com.bogdan.repository.StocksRepository;
 
@@ -16,7 +16,7 @@ public class StocksService {
   @Inject
   private StocksRepository stocksRepository;
 
-  public List<StockDto> getStocks(long offset, long size) {
+  public List<StockDto> getStocks(long offset, int size) {
     return stocksRepository.getPage(offset, size).stream()
         .map(toStockDto())
         .collect(Collectors.toList());
@@ -36,8 +36,8 @@ public class StocksService {
   }
 
 
-  private Function<StockDto, Stock> toStockEntity() {
-    return stockDto -> new Stock(
+  private Function<StockDto, StockEntity> toStockEntity() {
+    return stockDto -> new StockEntity(
         stockDto.getId(),
         stockDto.getName(),
         stockDto.getCurrentPrice(),
@@ -45,12 +45,12 @@ public class StocksService {
     );
   }
 
-  private Function<Stock, StockDto> toStockDto() {
-    return stock -> new StockDto(
-        stock.getId(),
-        stock.getName(),
-        stock.getCurrentPrice(),
-        stock.getLastUpdate()
+  private Function<StockEntity, StockDto> toStockDto() {
+    return stockEntity -> new StockDto(
+        stockEntity.getId(),
+        stockEntity.getName(),
+        stockEntity.getCurrentPrice(),
+        stockEntity.getLastUpdate()
     );
   }
 

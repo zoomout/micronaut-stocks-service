@@ -1,6 +1,6 @@
 package com.bogdan.repository;
 
-import com.bogdan.domain.Stock;
+import com.bogdan.domain.StockEntity;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class StocksRepositoryImpl implements StocksRepository {
 
-  private List<Stock> stocks = new CopyOnWriteArrayList<>();
+  private List<StockEntity> stocks = new CopyOnWriteArrayList<>();
 
   @Inject
   private TimeMachine timeMachine;
@@ -22,32 +22,35 @@ public class StocksRepositoryImpl implements StocksRepository {
   }
 
   @Override
-  public List<Stock> getPage(long offset, long size) {
+  public List<StockEntity> getPage(long offset, int size) {
     return stocks.stream().skip(offset).limit(size).collect(Collectors.toList());
   }
 
   @Override
-  public Stock retrieve(int id) {
+  public StockEntity retrieve(int id) {
+    if (id >= stocks.size()) {
+      return null; // TODO throw exception
+    }
     return stocks.get(id);
   }
 
   @Override
-  public synchronized Stock create(Stock stock) {
-    Stock newStock = new Stock(stocks.size(), stock.getName(), stock.getCurrentPrice(), timeMachine.getTime());
-    stocks.add(newStock);
-    return newStock;
+  public synchronized StockEntity create(StockEntity stockEntity) {
+    StockEntity newStockEntity = new StockEntity(stocks.size(), stockEntity.getName(), stockEntity.getCurrentPrice(), timeMachine.getTime());
+    stocks.add(newStockEntity);
+    return newStockEntity;
   }
 
   @Override
-  public synchronized Stock update(int id, Stock stock) {
+  public synchronized StockEntity update(int id, StockEntity stockEntity) {
     if (id >= stocks.size()) {
-      return null;
+      return null; // TODO throw exception
     }
-    Stock current = stocks.get(id);
-    Stock updated = new Stock(
+    StockEntity current = stocks.get(id);
+    StockEntity updated = new StockEntity(
         current.getId(),
-        stock.getName() != null ? stock.getName() : current.getName(),
-        stock.getCurrentPrice() != null ? stock.getCurrentPrice() : current.getCurrentPrice(),
+        stockEntity.getName() != null ? stockEntity.getName() : current.getName(),
+        stockEntity.getCurrentPrice() != null ? stockEntity.getCurrentPrice() : current.getCurrentPrice(),
         timeMachine.getTime()
     );
     stocks.set(id, updated);
@@ -55,9 +58,9 @@ public class StocksRepositoryImpl implements StocksRepository {
   }
 
   @Override
-  public Stock delete(int id) {
+  public StockEntity delete(int id) {
     if (id >= stocks.size()) {
-      return null;
+      return null; // TODO throw exception
     }
     return stocks.remove(id);
   }

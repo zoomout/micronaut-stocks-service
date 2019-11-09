@@ -1,6 +1,6 @@
 package com.bogdan.repository;
 
-import com.bogdan.domain.Stock;
+import com.bogdan.domain.StockEntity;
 
 import java.util.List;
 
@@ -8,14 +8,14 @@ public interface StocksRepository {
 
   int getSize();
 
-  List<Stock> getPage(long offset, long size);
+  List<StockEntity> getPage(long offset, int size);
 
-  Stock create(Stock stock);
+  StockEntity create(StockEntity stockEntity);
 
-  Stock retrieve(int id);
+  StockEntity retrieve(int id);
 
-  Stock update(int id, Stock stock);
+  StockEntity update(int id, StockEntity stockEntity);
 
-  Stock delete(int id);
+  StockEntity delete(int id);
 
 }

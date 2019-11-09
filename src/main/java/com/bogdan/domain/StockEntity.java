@@ -2,13 +2,14 @@ package com.bogdan.domain;
 
 import java.time.Instant;
 
-public class Stock {
+public class StockEntity {
+
   private Integer id;
   private String name;
   private Double currentPrice;
   private Instant lastUpdate;
 
-  public Stock(Integer id, String name, Double currentPrice, Instant lastUpdate) {
+  public StockEntity(Integer id, String name, Double currentPrice, Instant lastUpdate) {
     this.id = id;
     this.name = name;
     this.currentPrice = currentPrice;
@@ -30,4 +31,5 @@ public class Stock {
   public Instant getLastUpdate() {
     return lastUpdate;
   }
+
 }
