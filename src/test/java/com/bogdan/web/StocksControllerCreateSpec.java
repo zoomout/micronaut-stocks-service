@@ -29,7 +29,7 @@ class StocksControllerCreateSpec extends BaseStocksControllerSpec {
     return timeMachineMock;
   }
 
-  public static final int FIST_STOCK_ID = 0;
+  private static final int FIST_STOCK_ID = 0;
 
   private static Stream<Arguments> validPayloadData() {
     return Stream.of(

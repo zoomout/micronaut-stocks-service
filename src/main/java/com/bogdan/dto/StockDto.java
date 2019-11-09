@@ -1,7 +1,10 @@
 package com.bogdan.dto;
 
+import io.micronaut.core.annotation.Introspected;
+
 import java.time.Instant;
 
+@Introspected
 public class StockDto {
 
   private Integer id;
