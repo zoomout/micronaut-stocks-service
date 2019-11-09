@@ -6,12 +6,8 @@ import java.time.Instant;
 
 public class StockUpdateDto extends StockDto {
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Integer id;
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private String name;
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Instant lastUpdate;
+  @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+  private Double currentPrice;
 
   public StockUpdateDto(
       final Integer id,
