@@ -53,24 +53,24 @@ public class TestDataParameters {
     return Stream.of(
         Arguments.of(
             new JSONObject()
-                .accumulate("name", "updated_name_1")
+                .accumulate("name", "valid_name_1")
                 .accumulate("currentPrice", 1.23)
         ),
         Arguments.of(
             new JSONObject()
-                .accumulate("id", 1) // should ignore
-                .accumulate("name", "updated_name_2")
+                .accumulate("id", 1234) // should ignore
+                .accumulate("name", "valid_name_2")
                 .accumulate("currentPrice", 1.24)
         ),
         Arguments.of(
             new JSONObject()
-                .accumulate("name", "updated_name_3")
+                .accumulate("name", "valid_name_3")
                 .accumulate("currentPrice", 1.2)
                 .accumulate("lastUpdate", 1.123) // should ignore
         ),
         Arguments.of(
             new JSONObject()
-                .accumulate("name", "updated_name_4")
+                .accumulate("name", "valid_name_4")
                 .accumulate("currentPrice", 1.25)
                 .accumulate("unknown", "someValue") // should ignore
         )
