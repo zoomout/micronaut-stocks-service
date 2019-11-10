@@ -34,3 +34,8 @@ docker-compose -f docker-compose.yml down
 # to limit docker CPUs
 docker update --cpus 2 micronaut-stocks-service
 ```
+
+## Hot reload execution during development
+```bash
+./gradlew run --continuous
+```

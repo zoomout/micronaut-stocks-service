@@ -51,6 +51,10 @@ dependencies {
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
     testImplementation group: 'org.json', name: 'json', version: '20190722'
+
+    developmentOnly group: 'io.micronaut', name: 'micronaut-runtime-osx', version: '1.2.6'
+    developmentOnly group: 'net.java.dev.jna', name: 'jna', version: '5.5.0'
+    developmentOnly group: 'io.methvin', name: 'directory-watcher', version: '0.9.6'
 }
 
 test.classpath += configurations.developmentOnly

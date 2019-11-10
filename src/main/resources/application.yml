@@ -12,3 +12,7 @@ micronaut:
       swagger:
         paths: classpath:META-INF/swagger
         mapping: /swagger/**
+  io:
+    watch:
+      paths: src/main
+      restart: true
