@@ -22,6 +22,7 @@ dependencies {
     annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-validation"
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi"
     implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "io.micronaut:micronaut-inject"
     implementation "io.micronaut:micronaut-validation"
@@ -30,6 +31,7 @@ dependencies {
     implementation "io.micronaut:micronaut-http-client"
     implementation group: 'io.micronaut.data', name: 'micronaut-data-runtime', version: '1.0.0.M4'
     implementation "io.micronaut:micronaut-views"
+    implementation "io.swagger.core.v3:swagger-annotations"
     runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
     runtimeOnly 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
 

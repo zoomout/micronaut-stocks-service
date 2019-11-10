@@ -9,3 +9,6 @@ micronaut:
         enabled: true
         mapping: "/public/**"
         paths: "classpath:public"
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
