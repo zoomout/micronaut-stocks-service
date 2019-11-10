@@ -75,7 +75,7 @@ class StocksControllerPutSpec extends BaseStocksControllerSpec {
   }
 
   @Test
-  void testUpdateNonExistingStock_shouldCreate() {
+  void testUpdateNonExistingStock_shouldFail() {
     int nonExistingStockId = 842;
     JSONObject payload = new JSONObject()
         .accumulate("name", "name_" + nonExistingStockId)
