@@ -1,5 +1,9 @@
 # Sample Micronaut server application
 
+# Note:
+PUT - is an idempotent request, thus it's not suitable for partial update
+PATCH - is used for partial update
+
 ## Build
 ```bash
 ./gradlew assemble

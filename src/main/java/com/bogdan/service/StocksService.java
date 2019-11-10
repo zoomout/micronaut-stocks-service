@@ -35,7 +35,6 @@ public class StocksService {
     return toStockDto().apply(stocksRepository.update(id, toStockEntity().apply(stockDto)));
   }
 
-
   private Function<StockDto, StockEntity> toStockEntity() {
     return stockDto -> new StockEntity(
         stockDto.getId(),

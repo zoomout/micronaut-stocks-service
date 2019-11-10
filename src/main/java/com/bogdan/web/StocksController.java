@@ -11,6 +11,7 @@ import io.micronaut.validation.Validated;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
+import java.net.URI;
 
 @Validated
 @Controller("/api/stocks")
@@ -35,7 +36,9 @@ public class StocksController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public HttpResponse post(@Valid @Body StockDto stockDto) {
-    return HttpResponse.created(stocksService.createStock(stockDto));
+    StockDto stock = stocksService.createStock(stockDto);
+    URI uri = URI.create("/api/stocks/" + stock.getId());
+    return HttpResponse.created(stock, uri);
   }
 
   @Put(value = "/{id}")

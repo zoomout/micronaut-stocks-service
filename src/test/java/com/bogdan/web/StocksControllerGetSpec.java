@@ -7,13 +7,12 @@ import io.micronaut.test.annotation.MockBean;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.bogdan.testdata.Converters.asFloat;
-import static io.micronaut.http.HttpStatus.*;
-import static io.micronaut.http.MediaType.APPLICATION_JSON;
-import static io.restassured.RestAssured.given;
+import static com.bogdan.testdata.StocksApiClient.FIST_STOCK_ID;
+import static io.micronaut.http.HttpStatus.BAD_REQUEST;
+import static io.micronaut.http.HttpStatus.OK;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.StringContains.containsString;
@@ -26,11 +25,9 @@ class StocksControllerGetSpec extends BaseStocksControllerSpec {
     return timeMachineMock;
   }
 
-  private static final int FIST_STOCK_ID = 0;
-
   @Test
   void testGetCreatedStock() {
-    JSONObject createdStock = createStock();
+    JSONObject createdStock = stocksApiClient.createStock();
     when().get(stocksApi() + "/" + FIST_STOCK_ID).
         then().assertThat().statusCode(is(OK.getCode())).
         and().body("id", is(FIST_STOCK_ID)).
@@ -42,7 +39,7 @@ class StocksControllerGetSpec extends BaseStocksControllerSpec {
 
   @Test
   void testGetMultipleCreatedStocks() {
-    List<JSONObject> createdStocksList = createMultipleStocks(2);
+    List<JSONObject> createdStocksList = stocksApiClient.createMultipleStocks(2);
     for (int i = 0; i < createdStocksList.size(); i++) {
       JSONObject createdStock = createdStocksList.get(i);
       when().get(stocksApi() + "/" + i).
@@ -61,31 +58,6 @@ class StocksControllerGetSpec extends BaseStocksControllerSpec {
     when().get(stocksApi() + "/" + nonExistingStockId).
         then().assertThat().statusCode(is(BAD_REQUEST.getCode()))
         .and().body(containsString("Entity 'stock' with id '" + nonExistingStockId + "' not found"));
-  }
-
-  private List<JSONObject> createMultipleStocks(int amount) {
-    ArrayList<JSONObject> stocks = new ArrayList<>();
-    for (int i = 0; i < amount; i++) {
-      JSONObject stock = createStock(i);
-      stocks.add(stock);
-    }
-    return stocks;
-  }
-
-  private JSONObject createStock() {
-    return createStock(FIST_STOCK_ID);
-  }
-
-  private JSONObject createStock(int id) {
-    JSONObject stockPayload = new JSONObject()
-        .accumulate("name", "name_" + id)
-        .accumulate("currentPrice", 1.2);
-    given().contentType(APPLICATION_JSON)
-        .and()
-        .body(stockPayload.toString()).
-        when().post(stocksApi()).
-        then().assertThat().statusCode(is(CREATED.getCode()));
-    return stockPayload;
   }
 
 }
