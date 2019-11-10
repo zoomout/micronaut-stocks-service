@@ -22,9 +22,10 @@ class StocksListViewController {
   @View("stocksList")
   @Get()
   public HttpResponse listStocks(@Valid Pageable pageable) {
+    int total = stocksService.getTotal();
     List<StockDto> stocks = stocksService.getStocks(pageable.getOffset(), pageable.getSize());
     return HttpResponse.ok(CollectionUtils.mapOf(
-        "amount", 5,
+        "total", total,
         "stocks", stocks
     ));
   }

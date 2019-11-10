@@ -18,6 +18,10 @@ public class StocksService {
   @Inject
   private StocksRepository stocksRepository;
 
+  public int getTotal(){
+    return stocksRepository.getSize();
+  }
+
   public List<StockDto> getStocks(long offset, int size) {
     return stocksRepository.getPage(offset, size).stream()
         .map(toStockDto())
