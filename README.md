@@ -23,3 +23,14 @@ java -jar build/libs/stocks-0.1-all.jar
 ```bash
 ./gradlew jacocoTestReport
 ```
+
+## Build and run in docker
+```bash
+# after running ./gradlew assemble
+# to start
+docker-compose -f docker-compose.yml up
+# to stop
+docker-compose -f docker-compose.yml down
+# to limit docker CPUs
+docker update --cpus 2 micronaut-stocks-service
+```
