@@ -1,5 +1,6 @@
 package com.bogdan.repository;
 
+import com.bogdan.time.TimeMachineImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

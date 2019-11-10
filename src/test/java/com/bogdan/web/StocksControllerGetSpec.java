@@ -1,7 +1,7 @@
 package com.bogdan.web;
 
-import com.bogdan.repository.TimeMachine;
-import com.bogdan.repository.TimeMachineImpl;
+import com.bogdan.time.TimeMachine;
+import com.bogdan.time.TimeMachineImpl;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.bogdan.repository;
+package com.bogdan.time;
 
 import javax.inject.Singleton;
 import java.time.Instant;

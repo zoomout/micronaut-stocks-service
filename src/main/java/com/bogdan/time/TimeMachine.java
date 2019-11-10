@@ -1,4 +1,4 @@
-package com.bogdan.repository;
+package com.bogdan.time;
 
 import java.time.Instant;
 

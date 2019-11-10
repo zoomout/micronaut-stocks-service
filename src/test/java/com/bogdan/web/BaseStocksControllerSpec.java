@@ -1,6 +1,6 @@
 package com.bogdan.web;
 
-import com.bogdan.repository.TimeMachine;
+import com.bogdan.time.TimeMachine;
 import com.bogdan.testdata.StocksApiClient;
 import com.bogdan.testdata.StocksRepositoryTestImpl;
 import io.micronaut.runtime.server.EmbeddedServer;
