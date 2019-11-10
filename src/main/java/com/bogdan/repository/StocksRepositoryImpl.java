@@ -1,7 +1,7 @@
 package com.bogdan.repository;
 
 import com.bogdan.domain.StockEntity;
-import com.bogdan.error.EntityNotFoundException;
+import com.bogdan.exception.EntityNotFoundException;
 import com.bogdan.time.TimeMachine;
 
 import javax.inject.Inject;

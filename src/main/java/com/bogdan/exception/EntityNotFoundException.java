@@ -1,4 +1,4 @@
-package com.bogdan.error;
+package com.bogdan.exception;
 
 public class EntityNotFoundException extends RuntimeException {
 

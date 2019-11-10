@@ -1,4 +1,4 @@
-package com.bogdan.error;
+package com.bogdan.exception;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
