@@ -1,4 +1,4 @@
-package com.bogdan.repository;
+package com.bogdan.time;
 
 import com.bogdan.time.TimeMachineImpl;
 import org.junit.jupiter.api.Test;
