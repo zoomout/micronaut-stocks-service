@@ -11,7 +11,7 @@ import static org.hamcrest.text.MatchesPattern.matchesPattern;
 
 public class TestDataParameters {
 
-  public static Stream<Arguments> invalidStocksPayloadData() {
+  public static Stream<Arguments> invalidStocksPayloadValuesData() {
     return Stream.of(
         Arguments.of(
             "",
@@ -22,16 +22,9 @@ public class TestDataParameters {
             containsString("Invalid JSON")
         ),
         Arguments.of(
-            new JSONObject().toString(), // missing name and currentPrice
-            both(containsString("currentPrice: must not be null"))
-                .and(containsString("name: must not be empty"))
-        ),
-        Arguments.of(
-            new JSONObject().accumulate("name", "name_1").toString(), // missing currentPrice
-            containsString("currentPrice: must not be null")
-        ),
-        Arguments.of(
-            new JSONObject().accumulate("currentPrice", 1.23).toString(), // missing name
+            new JSONObject()
+                .accumulate("name", "") // empty name
+                .accumulate("currentPrice", 1.1).toString(),
             containsString("name: must not be empty")
         ),
         Arguments.of(
@@ -45,6 +38,24 @@ public class TestDataParameters {
                 .accumulate("name", "name_1")
                 .accumulate("currentPrice", "stringIsInvalidType").toString(), // invalid currentPrice type
             containsString("not a valid Double value")
+        )
+    );
+  }
+
+  public static Stream<Arguments> missingFields() {
+    return Stream.of(
+        Arguments.of(
+            new JSONObject().toString(), // missing name and currentPrice
+            both(containsString("currentPrice: must not be null"))
+                .and(containsString("name: must not be empty"))
+        ),
+        Arguments.of(
+            new JSONObject().accumulate("name", "name_1").toString(), // missing currentPrice
+            containsString("currentPrice: must not be null")
+        ),
+        Arguments.of(
+            new JSONObject().accumulate("currentPrice", 1.23).toString(), // missing name
+            containsString("name: must not be empty")
         )
     );
   }

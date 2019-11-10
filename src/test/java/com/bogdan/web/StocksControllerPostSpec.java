@@ -14,8 +14,7 @@ import java.util.stream.Stream;
 
 import static com.bogdan.testdata.Converters.asFloat;
 import static com.bogdan.testdata.StocksApiClient.FIST_STOCK_ID;
-import static com.bogdan.testdata.TestDataParameters.invalidStocksPayloadData;
-import static com.bogdan.testdata.TestDataParameters.validStocksPayloadData;
+import static com.bogdan.testdata.TestDataParameters.*;
 import static io.micronaut.http.HttpHeaders.LOCATION;
 import static io.micronaut.http.HttpStatus.BAD_REQUEST;
 import static io.micronaut.http.HttpStatus.CREATED;
@@ -51,7 +50,7 @@ class StocksControllerPostSpec extends BaseStocksControllerSpec {
   }
 
   private static Stream<Arguments> invalidPayloadData() {
-    return invalidStocksPayloadData();
+    return Stream.concat(invalidStocksPayloadValuesData(), missingFields());
   }
 
   @ParameterizedTest

@@ -10,12 +10,10 @@ public interface StocksRepository {
 
   List<StockEntity> getPage(long offset, int size);
 
-  StockEntity create(StockEntity stockEntity);
+  StockEntity findById(int id);
 
-  StockEntity retrieve(int id);
+  StockEntity save(StockEntity stockEntity);
 
-  StockEntity update(int id, StockEntity stockEntity);
-
-  StockEntity delete(int id);
+  StockEntity deleteById(int id);
 
 }

@@ -1,5 +1,6 @@
 package com.bogdan.web;
 
+import com.bogdan.dto.PatchStockDto;
 import com.bogdan.dto.StockDto;
 import com.bogdan.service.StocksService;
 import io.micronaut.data.model.Pageable;
@@ -45,6 +46,13 @@ public class StocksController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public HttpResponse put(@PositiveOrZero Integer id, @Valid @Body StockDto stockDto) {
-    return HttpResponse.ok(stocksService.updateStock(id, stockDto));
+    return HttpResponse.ok(stocksService.overrideUpdateStock(id, stockDto));
+  }
+
+  @Patch(value = "/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public HttpResponse patch(@PositiveOrZero Integer id, @Valid @Body PatchStockDto stockDto) {
+    return HttpResponse.ok(stocksService.patchUpdateStock(id, stockDto));
   }
 }

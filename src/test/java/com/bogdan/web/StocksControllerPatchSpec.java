@@ -15,7 +15,8 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static com.bogdan.testdata.Converters.asFloat;
-import static com.bogdan.testdata.TestDataParameters.*;
+import static com.bogdan.testdata.TestDataParameters.invalidStocksPayloadValuesData;
+import static com.bogdan.testdata.TestDataParameters.validStocksPayloadData;
 import static io.micronaut.http.HttpStatus.BAD_REQUEST;
 import static io.micronaut.http.HttpStatus.OK;
 import static io.micronaut.http.MediaType.APPLICATION_JSON;
@@ -23,34 +24,61 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
 @MicronautTest
-class StocksControllerPutSpec extends BaseStocksControllerSpec {
+class StocksControllerPatchSpec extends BaseStocksControllerSpec {
 
   @MockBean(TimeMachineImpl.class)
   public TimeMachine timeMachine() {
     return timeMachineMock;
   }
 
+  public static Stream<Arguments> missingFields() {
+    return Stream.of(
+        Arguments.of(
+            new JSONObject().toString() // missing name and currentPrice
+        ),
+        Arguments.of(
+            new JSONObject().accumulate("name", "name_1").toString() // missing currentPrice
+
+        ),
+        Arguments.of(
+            new JSONObject().accumulate("currentPrice", 1.23).toString() // missing name
+        )
+    );
+  }
+
   private static Stream<Arguments> validPayloadData() {
-    return validStocksPayloadData();
+    return Stream.concat(validStocksPayloadData(), missingFields());
   }
 
   @ParameterizedTest
   @MethodSource("validPayloadData")
-  void testUpdateStock(JSONObject payload) {
-    JSONObject createdStock = stocksApiClient.createStock();
+  void testUpdateStock(JSONObject patchPayload) {
+    JSONObject createdPayload = stocksApiClient.createStock();
     Instant updateTime = Instant.ofEpochSecond(9876);
-    Integer id = createdStock.getInt("id");
+    Integer id = createdPayload.getInt("id");
     changeTime(updateTime);
+
+    String expectedName = expectedName(patchPayload, createdPayload, "name");
+    Float expectedCurrentPrice = expectedCurrentPrice(patchPayload, createdPayload, "currentPrice");
+
     given().contentType(APPLICATION_JSON)
         .and()
-        .body(payload.toString()).
-        when().put(stocksApi() + "/" + id).
+        .body(patchPayload.toString()).
+        when().patch(stocksApi() + "/" + id).
         then().assertThat().statusCode(is(OK.getCode())).
         and().body("id", is(id)).
-        and().body("name", is(payload.get("name"))).
-        and().body("currentPrice", is(payload.getFloat("currentPrice"))).
+        and().body("name", is(expectedName)).
+        and().body("currentPrice", is(expectedCurrentPrice)).
         and().body("lastUpdate", is((asFloat(updateTime)))
     );
+  }
+
+  private String expectedName(JSONObject patched, JSONObject original, String key) {
+    return patched.has(key) ? patched.getString(key) : original.getString(key);
+  }
+
+  private Float expectedCurrentPrice(JSONObject patched, JSONObject original, String key) {
+    return patched.has(key) ? patched.getFloat(key) : original.getFloat(key);
   }
 
   @Test
@@ -83,7 +111,7 @@ class StocksControllerPutSpec extends BaseStocksControllerSpec {
     given().contentType(APPLICATION_JSON)
         .and()
         .body(payload.toString()).
-        when().put(stocksApi() + "/" + nonExistingStockId).
+        when().patch(stocksApi() + "/" + nonExistingStockId).
         then().assertThat().statusCode(is(BAD_REQUEST.getCode()));
 
   }
@@ -95,7 +123,7 @@ class StocksControllerPutSpec extends BaseStocksControllerSpec {
     given().contentType(APPLICATION_JSON)
         .and()
         .body(updatedStockPayload.toString()).
-        when().put(stocksApi() + "/" + id).
+        when().patch(stocksApi() + "/" + id).
         then().assertThat().statusCode(is(OK.getCode())).
         and().body("id", is(id)).
         and().body("name", is(updatedStockPayload.get("name"))).
@@ -104,7 +132,7 @@ class StocksControllerPutSpec extends BaseStocksControllerSpec {
   }
 
   private static Stream<Arguments> invalidPayloadData() {
-    return Stream.concat(invalidStocksPayloadValuesData(), missingFields());
+    return invalidStocksPayloadValuesData();
   }
 
   @ParameterizedTest
@@ -115,7 +143,7 @@ class StocksControllerPutSpec extends BaseStocksControllerSpec {
         .contentType(APPLICATION_JSON)
         .and().body(payload)
         .when()
-        .put(stocksApi() + "/" + createdStock.getInt("id"))
+        .patch(stocksApi() + "/" + createdStock.getInt("id"))
         .then().statusCode(is(BAD_REQUEST.getCode()))
         .and().body(matcher);
   }

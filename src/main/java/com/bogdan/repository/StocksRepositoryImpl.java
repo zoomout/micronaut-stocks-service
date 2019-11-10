@@ -28,32 +28,43 @@ public class StocksRepositoryImpl implements StocksRepository {
   }
 
   @Override
-  public StockEntity retrieve(int id) {
+  public StockEntity findById(int id) {
     return stocks.get(validated(id));
   }
 
   @Override
-  public synchronized StockEntity create(StockEntity stockEntity) {
-    StockEntity newStockEntity = new StockEntity(stocks.size(), stockEntity.getName(), stockEntity.getCurrentPrice(), timeMachine.getTime());
+  public synchronized StockEntity save(final StockEntity stockEntity) {
+    if (stockEntity.getId() == null) {
+      return create(stockEntity);
+    } else {
+      return update(stockEntity);
+    }
+  }
+
+  private StockEntity create(final StockEntity stockEntity) {
+    StockEntity newStockEntity = new StockEntity(
+        stocks.size(),
+        stockEntity.getName(),
+        stockEntity.getCurrentPrice(),
+        timeMachine.getTime()
+    );
     stocks.add(newStockEntity);
     return newStockEntity;
   }
 
-  @Override
-  public synchronized StockEntity update(int id, StockEntity stockEntity) {
-    StockEntity current = stocks.get(validated(id));
+  private StockEntity update(final StockEntity stockEntity) {
     StockEntity updated = new StockEntity(
-        current.getId(),
-        stockEntity.getName() != null ? stockEntity.getName() : current.getName(),
-        stockEntity.getCurrentPrice() != null ? stockEntity.getCurrentPrice() : current.getCurrentPrice(),
+        validated(stockEntity.getId()),
+        stockEntity.getName(),
+        stockEntity.getCurrentPrice(),
         timeMachine.getTime()
     );
-    stocks.set(id, updated);
+    stocks.set(stockEntity.getId(), updated);
     return updated;
   }
 
   @Override
-  public StockEntity delete(int id) {
+  public StockEntity deleteById(int id) {
     return stocks.remove(validated(id));
   }
 
