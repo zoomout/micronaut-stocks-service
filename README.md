@@ -37,5 +37,5 @@ docker update --cpus 2 micronaut-stocks-service
 
 ## Hot reload execution during development
 ```bash
-./gradlew run --continuous
+micronaut_io_watch_paths=src/main micronaut_io_watch_restart=true ./gradlew run --continuous
 ```
