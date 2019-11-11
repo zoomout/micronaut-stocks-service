@@ -47,6 +47,6 @@ public class StocksController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public HttpResponse patch(@PositiveOrZero Integer id, @Valid @Body UpdateStockDto stockDto) {
-    return HttpResponse.ok(stocksService.patchUpdateStock(id, stockDto));
+    return HttpResponse.ok(stocksService.updateStock(id, stockDto));
   }
 }

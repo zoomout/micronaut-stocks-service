@@ -9,7 +9,6 @@ import com.bogdan.repository.StocksRepository;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,16 +33,17 @@ public class StocksService {
   }
 
   public ResponseStockDto createStock(CreateStockDto stockDto) {
-    return toStockDto().apply(stocksRepository.save(toStockEntityCreate().apply(stockDto)));
+    return toStockDto().apply(stocksRepository.save(toEntityForCreate(stockDto)));
   }
 
-  public ResponseStockDto patchUpdateStock(int id, UpdateStockDto stockDto) {
-    StockEntity retrieved = stocksRepository.findById(id);
-    return toStockDto().apply(stocksRepository.save(toStockEntityPatch().apply(stockDto, retrieved)));
+  public ResponseStockDto updateStock(int id, UpdateStockDto stockDto) {
+    StockEntity retrievedEntity = stocksRepository.findById(id);
+    StockEntity entityForUpdate = toEntityForUpdate(stockDto, retrievedEntity);
+    return toStockDto().apply(stocksRepository.save(entityForUpdate));
   }
 
-  private Function<CreateStockDto, StockEntity> toStockEntityCreate() {
-    return stockDto -> new StockEntity(
+  private StockEntity toEntityForCreate(final CreateStockDto stockDto) {
+    return new StockEntity(
         null,
         stockDto.getName(),
         stockDto.getCurrentPrice(),
@@ -51,11 +51,11 @@ public class StocksService {
     );
   }
 
-  private BiFunction<UpdateStockDto, StockEntity, StockEntity> toStockEntityPatch() {
-    return (stockDto, existingEntity) -> new StockEntity(
-        existingEntity.getId(),
-        existingEntity.getName(),
-        stockDto.getCurrentPrice() != null ? stockDto.getCurrentPrice() : existingEntity.getCurrentPrice(),
+  private StockEntity toEntityForUpdate(final UpdateStockDto stockDto, final StockEntity retrievedEntity) {
+    return new StockEntity(
+        retrievedEntity.getId(),
+        retrievedEntity.getName(),
+        stockDto.getCurrentPrice() != null ? stockDto.getCurrentPrice() : retrievedEntity.getCurrentPrice(),
         null
     );
   }
