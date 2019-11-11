@@ -1,8 +1,9 @@
 package com.bogdan.service;
 
 import com.bogdan.domain.StockEntity;
-import com.bogdan.dto.PatchStockDto;
-import com.bogdan.dto.StockDto;
+import com.bogdan.dto.CreateStockDto;
+import com.bogdan.dto.ResponseStockDto;
+import com.bogdan.dto.UpdateStockDto;
 import com.bogdan.repository.StocksRepository;
 
 import javax.inject.Inject;
@@ -18,34 +19,30 @@ public class StocksService {
   @Inject
   private StocksRepository stocksRepository;
 
-  public int getTotal(){
+  public int getTotal() {
     return stocksRepository.getSize();
   }
 
-  public List<StockDto> getStocks(long offset, int size) {
+  public List<ResponseStockDto> getStocks(long offset, int size) {
     return stocksRepository.getPage(offset, size).stream()
         .map(toStockDto())
         .collect(Collectors.toList());
   }
 
-  public StockDto getStock(int id) {
+  public ResponseStockDto getStock(int id) {
     return toStockDto().apply(stocksRepository.findById(id));
   }
 
-  public StockDto createStock(StockDto stockDto) {
+  public ResponseStockDto createStock(CreateStockDto stockDto) {
     return toStockDto().apply(stocksRepository.save(toStockEntityCreate().apply(stockDto)));
   }
 
-  public StockDto overrideUpdateStock(int id, StockDto stockDto) {
-    return toStockDto().apply(stocksRepository.save(toStockEntityUpdate().apply(stockDto, id)));
-  }
-
-  public StockDto patchUpdateStock(int id, PatchStockDto stockDto) {
+  public ResponseStockDto patchUpdateStock(int id, UpdateStockDto stockDto) {
     StockEntity retrieved = stocksRepository.findById(id);
     return toStockDto().apply(stocksRepository.save(toStockEntityPatch().apply(stockDto, retrieved)));
   }
 
-  private Function<StockDto, StockEntity> toStockEntityCreate() {
+  private Function<CreateStockDto, StockEntity> toStockEntityCreate() {
     return stockDto -> new StockEntity(
         null,
         stockDto.getName(),
@@ -54,26 +51,17 @@ public class StocksService {
     );
   }
 
-  private BiFunction<StockDto, Integer, StockEntity> toStockEntityUpdate() {
-    return (stockDto, id) -> new StockEntity(
-        id,
-        stockDto.getName(),
-        stockDto.getCurrentPrice(),
-        null
-    );
-  }
-
-  private BiFunction<PatchStockDto, StockEntity, StockEntity> toStockEntityPatch() {
+  private BiFunction<UpdateStockDto, StockEntity, StockEntity> toStockEntityPatch() {
     return (stockDto, existingEntity) -> new StockEntity(
         existingEntity.getId(),
-        stockDto.getName() != null ? stockDto.getName() : existingEntity.getName(),
+        existingEntity.getName(),
         stockDto.getCurrentPrice() != null ? stockDto.getCurrentPrice() : existingEntity.getCurrentPrice(),
         null
     );
   }
 
-  private Function<StockEntity, StockDto> toStockDto() {
-    return stockEntity -> new StockDto(
+  private Function<StockEntity, ResponseStockDto> toStockDto() {
+    return stockEntity -> new ResponseStockDto(
         stockEntity.getId(),
         stockEntity.getName(),
         stockEntity.getCurrentPrice(),

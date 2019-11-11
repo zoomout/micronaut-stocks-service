@@ -1,7 +1,8 @@
 package com.bogdan.web;
 
-import com.bogdan.dto.PatchStockDto;
-import com.bogdan.dto.StockDto;
+import com.bogdan.dto.CreateStockDto;
+import com.bogdan.dto.ResponseStockDto;
+import com.bogdan.dto.UpdateStockDto;
 import com.bogdan.service.StocksService;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.http.HttpResponse;
@@ -36,23 +37,16 @@ public class StocksController {
   @Post
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public HttpResponse post(@Valid @Body StockDto stockDto) {
-    StockDto stock = stocksService.createStock(stockDto);
+  public HttpResponse post(@Valid @Body CreateStockDto stockDto) {
+    ResponseStockDto stock = stocksService.createStock(stockDto);
     URI uri = URI.create("/api/stocks/" + stock.getId());
     return HttpResponse.created(stock, uri);
-  }
-
-  @Put(value = "/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public HttpResponse put(@PositiveOrZero Integer id, @Valid @Body StockDto stockDto) {
-    return HttpResponse.ok(stocksService.overrideUpdateStock(id, stockDto));
   }
 
   @Patch(value = "/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public HttpResponse patch(@PositiveOrZero Integer id, @Valid @Body PatchStockDto stockDto) {
+  public HttpResponse patch(@PositiveOrZero Integer id, @Valid @Body UpdateStockDto stockDto) {
     return HttpResponse.ok(stocksService.patchUpdateStock(id, stockDto));
   }
 }

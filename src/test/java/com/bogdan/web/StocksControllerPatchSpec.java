@@ -15,8 +15,7 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static com.bogdan.testdata.Converters.asFloat;
-import static com.bogdan.testdata.TestDataParameters.invalidStocksPayloadValuesData;
-import static com.bogdan.testdata.TestDataParameters.validStocksPayloadData;
+import static com.bogdan.testdata.SharedTestDataParameters.invalidStocksPayloadValuesData;
 import static io.micronaut.http.HttpStatus.BAD_REQUEST;
 import static io.micronaut.http.HttpStatus.OK;
 import static io.micronaut.http.MediaType.APPLICATION_JSON;
@@ -31,8 +30,39 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
     return timeMachineMock;
   }
 
-  public static Stream<Arguments> missingFields() {
+  private static Stream<Arguments> validPayloadData() {
     return Stream.of(
+        Arguments.of(
+            new JSONObject()
+                .accumulate("name", "valid_name_1") // should ignore
+                .accumulate("currentPrice", 1.23)
+        ),
+        Arguments.of(
+            new JSONObject()
+                .accumulate("id", 1234) // should ignore a number
+                .accumulate("currentPrice", 1.24)
+        ),
+        Arguments.of(
+            new JSONObject()
+                .accumulate("id", "abc") // should ignore a string
+                .accumulate("currentPrice", 1.25)
+        ),
+        Arguments.of(
+            new JSONObject()
+                .accumulate("currentPrice", 1.2)
+                .accumulate("lastUpdate", 1.123) // should ignore a number
+        ),
+        Arguments.of(
+            new JSONObject()
+                .accumulate("currentPrice", 1.2)
+                .accumulate("lastUpdate", "abc") // should ignore a string
+        ),
+        Arguments.of(
+            new JSONObject()
+                .accumulate("name", "valid_name_4")
+                .accumulate("currentPrice", 1.25)
+                .accumulate("unknown", "someValue") // should ignore
+        ),
         Arguments.of(
             new JSONObject().toString() // missing name and currentPrice
         ),
@@ -46,10 +76,6 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
     );
   }
 
-  private static Stream<Arguments> validPayloadData() {
-    return Stream.concat(validStocksPayloadData(), missingFields());
-  }
-
   @ParameterizedTest
   @MethodSource("validPayloadData")
   void testUpdateStock(JSONObject patchPayload) {
@@ -58,7 +84,6 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
     Integer id = createdPayload.getInt("id");
     changeTime(updateTime);
 
-    String expectedName = expectedName(patchPayload, createdPayload, "name");
     Float expectedCurrentPrice = expectedCurrentPrice(patchPayload, createdPayload, "currentPrice");
 
     given().contentType(APPLICATION_JSON)
@@ -67,14 +92,10 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
         when().patch(stocksApi() + "/" + id).
         then().assertThat().statusCode(is(OK.getCode())).
         and().body("id", is(id)).
-        and().body("name", is(expectedName)).
+        and().body("name", is(createdPayload.getString("name"))).
         and().body("currentPrice", is(expectedCurrentPrice)).
         and().body("lastUpdate", is((asFloat(updateTime)))
     );
-  }
-
-  private String expectedName(JSONObject patched, JSONObject original, String key) {
-    return patched.has(key) ? patched.getString(key) : original.getString(key);
   }
 
   private Float expectedCurrentPrice(JSONObject patched, JSONObject original, String key) {
@@ -84,21 +105,16 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
   @Test
   void testUpdateStockMultipleTimes() {
     JSONObject createdStock = stocksApiClient.createStock();
-    int stockId = createdStock.getInt("id");
 
-    JSONObject updatedStockFirstTime = new JSONObject()
-        .accumulate("name", "updated_name_first")
-        .accumulate("currentPrice", 1.88);
+    JSONObject updatedStockFirstTime = new JSONObject().accumulate("currentPrice", 1.88);
     int firstUpdateTimeSeconds = 7654;
 
-    updateStock(updatedStockFirstTime, stockId, firstUpdateTimeSeconds);
+    updateStockAndVerify(updatedStockFirstTime, createdStock, firstUpdateTimeSeconds);
 
-    JSONObject updatedStockSecondTime = new JSONObject()
-        .accumulate("name", "updated_name_second")
-        .accumulate("currentPrice", 1.99);
+    JSONObject updatedStockSecondTime = new JSONObject().accumulate("currentPrice", 1.99);
 
     int secondUpdateTimeSeconds = 3456;
-    updateStock(updatedStockSecondTime, stockId, secondUpdateTimeSeconds);
+    updateStockAndVerify(updatedStockSecondTime, createdStock, secondUpdateTimeSeconds);
   }
 
   @Test
@@ -116,17 +132,22 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
 
   }
 
-  private void updateStock(final JSONObject updatedStockPayload, final int id, final int timeInSeconds) {
+  private void updateStockAndVerify(
+      final JSONObject updatedStockPayload,
+      final JSONObject originalStock,
+      final int timeInSeconds
+  ) {
     Instant updateInstant = Instant.ofEpochSecond(timeInSeconds);
     changeTime(updateInstant);
-
+    int id = originalStock.getInt("id");
+    String name = originalStock.getString("name");
     given().contentType(APPLICATION_JSON)
         .and()
         .body(updatedStockPayload.toString()).
         when().patch(stocksApi() + "/" + id).
         then().assertThat().statusCode(is(OK.getCode())).
         and().body("id", is(id)).
-        and().body("name", is(updatedStockPayload.get("name"))).
+        and().body("name", is(name)).
         and().body("currentPrice", is(updatedStockPayload.getFloat("currentPrice"))).
         and().body("lastUpdate", is((asFloat(updateInstant))));
   }
