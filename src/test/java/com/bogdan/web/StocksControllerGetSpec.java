@@ -26,7 +26,7 @@ class StocksControllerGetSpec extends BaseStocksControllerSpec {
   }
 
   @Test
-  void testGetCreatedStock() {
+  void testGetStock() {
     JSONObject createdStock = stocksApiClient.createStock();
     when().get(stocksApi() + "/" + FIST_STOCK_ID).
         then().assertThat().statusCode(is(OK.getCode())).
@@ -38,7 +38,7 @@ class StocksControllerGetSpec extends BaseStocksControllerSpec {
   }
 
   @Test
-  void testGetMultipleCreatedStocks() {
+  void testGetMultipleStocks() {
     List<JSONObject> createdStocksList = stocksApiClient.createMultipleStocks(2);
     for (int i = 0; i < createdStocksList.size(); i++) {
       JSONObject createdStock = createdStocksList.get(i);

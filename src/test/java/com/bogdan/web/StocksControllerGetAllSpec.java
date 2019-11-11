@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 class StocksControllerGetAllSpec extends BaseStocksControllerSpec {
 
   @Test
-  void testGetAllStocks_withPagination_whenNonEmptyResponse() {
+  void testGetAllStocks_withPagination_andExpectNonEmptyResponse() {
     List<JSONObject> createdStocks = stocksApiClient.createMultipleStocks(5);
     int pageSize = 2;
 
@@ -54,7 +54,7 @@ class StocksControllerGetAllSpec extends BaseStocksControllerSpec {
           "?page=0",
           "?size=0"
       })
-  void testGetAllStocks_withPagination_whenEmptyResponse(String pagination) {
+  void testGetAllStocks_withPagination_andExpectEmptyResponse(String pagination) {
     when().get(stocksApi() + pagination).then().body(is("[]"));
   }
 

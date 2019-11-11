@@ -158,7 +158,7 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
 
   @ParameterizedTest
   @MethodSource("invalidPayloadData")
-  void testCreateStock_invalidJson(String payload, Matcher<String> matcher) {
+  void testCreateStock_withInvalidJson_shouldFail(String payload, Matcher<String> matcher) {
     JSONObject createdStock = stocksApiClient.createStock();
     given()
         .contentType(APPLICATION_JSON)

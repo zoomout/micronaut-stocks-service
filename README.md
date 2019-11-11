@@ -15,7 +15,8 @@ What is done:
 
 What is not done:
 - authentication
-- unit tests of service and repository layers (balanced by extensive coverage of rest APIs)
+- unit tests of service layer (balanced by extensive coverage of rest APIs)
+- unit tests of repository layer is not done because the repository is a fake implementation in memory
 - logging should be improved (tracing, configurable log levels)
 
 ## Build

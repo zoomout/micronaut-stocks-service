@@ -74,7 +74,7 @@ class StocksControllerPostSpec extends BaseStocksControllerSpec {
 
   @ParameterizedTest
   @MethodSource("validPayloadData")
-  void testCreateFirstValidStock(JSONObject payload) {
+  void testCreateAValidStock(JSONObject payload) {
     given().contentType(APPLICATION_JSON)
         .and()
         .body(payload.toString()).
@@ -117,7 +117,7 @@ class StocksControllerPostSpec extends BaseStocksControllerSpec {
 
   @ParameterizedTest
   @MethodSource("invalidPayloadData")
-  void testCreateStock_invalidJson(String payload, Matcher<String> matcher) {
+  void testCreateStock_withInvalidJson_shouldFail(String payload, Matcher<String> matcher) {
     given()
         .contentType(APPLICATION_JSON)
         .and().body(payload)
