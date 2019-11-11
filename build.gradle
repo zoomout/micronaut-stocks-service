@@ -2,12 +2,12 @@ plugins {
     id "net.ltgt.apt-eclipse" version "0.21"
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "application"
+    id 'jacoco'
 }
-
-
 
 version "0.1"
 group "com.bogdan"
+def junitVersion = "5.5.2"
 
 repositories {
     mavenCentral()
@@ -15,40 +15,84 @@ repositories {
 }
 
 configurations {
-    // for dependencies that are needed for development only
-    developmentOnly 
+    developmentOnly
 }
 
 dependencies {
     annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-validation"
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi"
     implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "io.micronaut:micronaut-inject"
     implementation "io.micronaut:micronaut-validation"
     implementation "io.micronaut:micronaut-runtime"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation "io.micronaut:micronaut-http-client"
+    implementation group: 'io.micronaut.data', name: 'micronaut-data-runtime', version: '1.0.0.M4'
+    implementation "io.micronaut:micronaut-views"
+    implementation "io.swagger.core.v3:swagger-annotations"
     runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    runtimeOnly 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
+
     testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
-    testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testImplementation "io.micronaut.test:micronaut-test-junit5"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testImplementation("io.micronaut.test:micronaut-test-junit5") {
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
+    }
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+    
+    testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+    testImplementation group: 'org.json', name: 'json', version: '20190722'
+    testRuntimeOnly group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
+    testRuntimeOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    
+    developmentOnly group: 'io.micronaut', name: 'micronaut-runtime-osx', version: '1.2.6'
+    developmentOnly group: 'net.java.dev.jna', name: 'jna', version: '5.5.0'
+    developmentOnly group: 'io.methvin', name: 'directory-watcher', version: '0.9.6'
 }
 
 test.classpath += configurations.developmentOnly
 
 mainClassName = "com.bogdan.Application"
-// use JUnit 5 platform
+
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
-tasks.withType(JavaCompile){
+tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs.add('-parameters')
 }
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        html.destination file("${buildDir}/reports/jacoco")
+    }
+
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(
+                    dir: it,
+                    exclude: [
+                            '**/Application**',
+                    ]
+            )
+        })
+    }
+}
+
+tasks.jacocoTestReport.dependsOn(test)
+tasks.assemble.dependsOn(jacocoTestReport)
 
 shadowJar {
     mergeServiceFiles()
