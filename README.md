@@ -10,7 +10,7 @@ What is done:
 - api tests
 - test coverage report
 - docker deployment
-- simple UI to display all stocks (using Thymeleaf)
+- simple UI to display all stocks (using Thymeleaf), available at root (e.g. http://localhost:8080/)
 - swagger api documentation
 
 What is not done:
