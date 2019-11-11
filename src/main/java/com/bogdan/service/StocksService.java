@@ -50,7 +50,7 @@ public class StocksService {
         null,
         stockDto.getName(),
         stockDto.getCurrentPrice(),
-        stockDto.getLastUpdate()
+        null
     );
   }
 
@@ -68,7 +68,7 @@ public class StocksService {
         existingEntity.getId(),
         stockDto.getName() != null ? stockDto.getName() : existingEntity.getName(),
         stockDto.getCurrentPrice() != null ? stockDto.getCurrentPrice() : existingEntity.getCurrentPrice(),
-        existingEntity.getLastUpdate()
+        null
     );
   }
 
