@@ -64,14 +64,14 @@ class StocksControllerPatchSpec extends BaseStocksControllerSpec {
                 .accumulate("unknown", "someValue") // should ignore
         ),
         Arguments.of(
-            new JSONObject().toString() // missing name and currentPrice
+            new JSONObject().toString() // should ignore missing name and currentPrice
         ),
         Arguments.of(
-            new JSONObject().accumulate("name", "name_1").toString() // missing currentPrice
+            new JSONObject().accumulate("name", "name_1").toString() // should ignore missing currentPrice
 
         ),
         Arguments.of(
-            new JSONObject().accumulate("currentPrice", 1.23).toString() // missing name
+            new JSONObject().accumulate("currentPrice", 1.23).toString() // should ignore missing name
         )
     );
   }

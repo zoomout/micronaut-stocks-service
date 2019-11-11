@@ -90,21 +90,21 @@ class StocksControllerPostSpec extends BaseStocksControllerSpec {
   private static Stream<Arguments> missingFields() {
     return Stream.of(
         Arguments.of(
-            new JSONObject().toString(), // missing name and currentPrice
+            new JSONObject().toString(),
             both(containsString("currentPrice: must not be null"))
                 .and(containsString("name: must not be empty"))
         ),
         Arguments.of(
-            new JSONObject().accumulate("name", "name_1").toString(), // missing currentPrice
+            new JSONObject().accumulate("name", "name_1").toString(),
             containsString("currentPrice: must not be null")
         ),
         Arguments.of(
-            new JSONObject().accumulate("currentPrice", 1.23).toString(), // missing name
+            new JSONObject().accumulate("currentPrice", 1.23).toString(),
             containsString("name: must not be empty")
         ),
         Arguments.of(
             new JSONObject()
-                .accumulate("name", "") // empty name
+                .accumulate("name", "")
                 .accumulate("currentPrice", 1.1).toString(),
             containsString("name: must not be empty")
         )
