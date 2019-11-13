@@ -1,7 +1,7 @@
 package com.bogdan.web;
 
 import com.bogdan.dto.CreateStockDto;
-import com.bogdan.dto.ResponseStockDto;
+import com.bogdan.dto.StockDto;
 import com.bogdan.dto.UpdateStockDto;
 import com.bogdan.service.StocksService;
 import io.micronaut.data.model.Pageable;
@@ -38,7 +38,7 @@ public class StocksController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public HttpResponse post(@Valid @Body CreateStockDto stockDto) {
-    ResponseStockDto stock = stocksService.createStock(stockDto);
+    StockDto stock = stocksService.createStock(stockDto);
     URI uri = URI.create("/api/stocks/" + stock.getId());
     return HttpResponse.created(stock, uri);
   }

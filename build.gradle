@@ -27,6 +27,7 @@ dependencies {
     implementation "io.micronaut:micronaut-inject"
     implementation "io.micronaut:micronaut-validation"
     implementation "io.micronaut:micronaut-runtime"
+    implementation "io.micronaut.configuration:micronaut-kafka"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation "io.micronaut:micronaut-http-client"
     implementation group: 'io.micronaut.data', name: 'micronaut-data-runtime', version: '1.0.0.M4'
@@ -44,7 +45,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
-    
+
     testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
@@ -52,7 +53,7 @@ dependencies {
     testImplementation group: 'org.json', name: 'json', version: '20190722'
     testRuntimeOnly group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
     testRuntimeOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-    
+
     developmentOnly group: 'io.micronaut', name: 'micronaut-runtime-osx', version: '1.2.6'
     developmentOnly group: 'net.java.dev.jna', name: 'jna', version: '5.5.0'
     developmentOnly group: 'io.methvin', name: 'directory-watcher', version: '0.9.6'

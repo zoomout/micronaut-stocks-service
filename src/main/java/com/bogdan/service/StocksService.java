@@ -2,9 +2,12 @@ package com.bogdan.service;
 
 import com.bogdan.domain.StockEntity;
 import com.bogdan.dto.CreateStockDto;
-import com.bogdan.dto.ResponseStockDto;
+import com.bogdan.dto.StockDto;
 import com.bogdan.dto.UpdateStockDto;
+import com.bogdan.events.StocksEventClient;
 import com.bogdan.repository.StocksRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -15,28 +18,37 @@ import java.util.stream.Collectors;
 @Singleton
 public class StocksService {
 
+  private static final Logger LOG = LoggerFactory.getLogger(StocksService.class);
+
   @Inject
   private StocksRepository stocksRepository;
+
+  @Inject
+  private StocksEventClient stocksEventClient;
 
   public int getTotal() {
     return stocksRepository.getSize();
   }
 
-  public List<ResponseStockDto> getStocks(long offset, int size) {
+  public List<StockDto> getStocks(long offset, int size) {
     return stocksRepository.getPage(offset, size).stream()
         .map(toStockDto())
         .collect(Collectors.toList());
   }
 
-  public ResponseStockDto getStock(int id) {
+  public StockDto getStock(int id) {
     return toStockDto().apply(stocksRepository.findById(id));
   }
 
-  public ResponseStockDto createStock(CreateStockDto stockDto) {
-    return toStockDto().apply(stocksRepository.save(toEntityForCreate(stockDto)));
+  public StockDto createStock(CreateStockDto stockDto) {
+    StockDto createdStockDto = toStockDto().apply(stocksRepository.save(toEntityForCreate(stockDto)));
+    LOG.info("Sending: " + createdStockDto);
+    stocksEventClient.sendStock(String.valueOf(createdStockDto.getId()), createdStockDto);
+    LOG.info("Sent: " + createdStockDto);
+    return createdStockDto;
   }
 
-  public ResponseStockDto updateStock(int id, UpdateStockDto stockDto) {
+  public StockDto updateStock(int id, UpdateStockDto stockDto) {
     StockEntity retrievedEntity = stocksRepository.findById(id);
     StockEntity entityForUpdate = toEntityForUpdate(stockDto, retrievedEntity);
     return toStockDto().apply(stocksRepository.save(entityForUpdate));
@@ -60,8 +72,8 @@ public class StocksService {
     );
   }
 
-  private Function<StockEntity, ResponseStockDto> toStockDto() {
-    return stockEntity -> new ResponseStockDto(
+  private Function<StockEntity, StockDto> toStockDto() {
+    return stockEntity -> new StockDto(
         stockEntity.getId(),
         stockEntity.getName(),
         stockEntity.getCurrentPrice(),

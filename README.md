@@ -39,3 +39,11 @@ docker update --cpus 2 micronaut-stocks-service
 ```bash
 micronaut_io_watch_paths=src/main micronaut_io_watch_restart=true ./gradlew run --continuous
 ```
+
+## Quick start docker-compose with Kafka
+```bash
+# to start
+./quick_start up
+# to stop
+./quick_start down
+```

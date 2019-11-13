@@ -1,6 +1,6 @@
 package com.bogdan.web;
 
-import com.bogdan.dto.ResponseStockDto;
+import com.bogdan.dto.StockDto;
 import com.bogdan.service.StocksService;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.data.model.Pageable;
@@ -23,7 +23,7 @@ class StocksListViewController {
   @Get()
   public HttpResponse listStocks(@Valid Pageable pageable) {
     int total = stocksService.getTotal();
-    List<ResponseStockDto> stocks = stocksService.getStocks(pageable.getOffset(), pageable.getSize());
+    List<StockDto> stocks = stocksService.getStocks(pageable.getOffset(), pageable.getSize());
     return HttpResponse.ok(CollectionUtils.mapOf(
         "total", total,
         "stocks", stocks

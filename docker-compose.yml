@@ -6,5 +6,23 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./
+    environment:
+      KAFKA_HOST: ${KAFKA_HOST}
     ports:
       - 10080:8080
+  micronaut-zookeeper:
+    container_name: micronaut-zookeeper
+    image: wurstmeister/zookeeper
+    ports:
+      - "10181:2181"
+  micronaut-kafka:
+    container_name: micronaut-kafka
+    image: wurstmeister/kafka
+    ports:
+      - "10092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: ${KAFKA_HOST}
+      KAFKA_CREATE_TOPICS: "micronaut-stocks:1:1"
+      KAFKA_ZOOKEEPER_CONNECT: micronaut-zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
