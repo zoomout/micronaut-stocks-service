@@ -14,6 +14,19 @@ PATCH - is used for partial update
 ./gradlew test
 ```
 
+## To run from IDE
+For IntelliJ IDEA if you plan to use the IntelliJ compiler then you should enable annotation processing 
+under the "Build, Execution, Deployment → Compiler → Annotation Processors" by ticking the "Enable annotation processing" checkbox
+https://docs.micronaut.io/latest/guide/index.html#ideSetup
+
+## Quick start docker-compose with Kafka
+```bash
+# to start
+./quick_start.sh up
+# to stop
+./quick_start.sh down
+```
+
 ## Run using jar
 ```bash
 java -jar build/libs/stocks-0.1-all.jar
@@ -40,10 +53,3 @@ docker update --cpus 2 micronaut-stocks-service
 micronaut_io_watch_paths=src/main micronaut_io_watch_restart=true ./gradlew run --continuous
 ```
 
-## Quick start docker-compose with Kafka
-```bash
-# to start
-./quick_start up
-# to stop
-./quick_start down
-```
