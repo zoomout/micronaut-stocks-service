@@ -1,6 +1,9 @@
 package com.bogdan.web;
 
+import com.bogdan.events.StocksEventClient;
+import com.bogdan.events.StocksEventListener;
 import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MockBean;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +13,16 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 @MicronautTest
 public class StocksListViewControllerTest extends BaseStocksControllerSpec {
+
+  @MockBean(StocksEventClient.class)
+  public StocksEventClient stocksEventClient() {
+    return  stocksEventClient;
+  }
+
+  @MockBean(StocksEventListener.class)
+  public StocksEventListener stocksEventListener() {
+    return  stocksEventListener;
+  }
 
   @Test
   void testStocksListView_shouldReturnSuccessfulResponse_withPayload() {
