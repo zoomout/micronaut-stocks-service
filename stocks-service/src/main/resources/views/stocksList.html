@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Stocks list</title>
+    <link href="../public/css/bootstrap.min.css" rel="stylesheet" media="screen"
+          th:href="@{../public/css/bootstrap.min.css}"/>
+    <link href="../public/css/core.css" rel="stylesheet" media="screen" th:href="@{../public/css/core.css}"/>
+    <link href="../public/css/main.css" rel="stylesheet" media="screen" th:href="@{../public/css/main.css}"/>
+    <script src="../public/js/jquery.min.js" th:src="@{../public/js/jquery.min.js}"></script>
+    <script src="../public/js/bootstrap.min.js" th:src="@{../public/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<section>
+    <h1>Stocks table</h1>
+    <h1>Total: <span th:text="${total}">Total</span></h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th> Name</th>
+            <th> Price</th>
+            <th> Last Updated</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${stocks.empty}">
+            <td colspan="20"> No stocks available</td>
+        </tr>
+        <tr th:each="stock : ${stocks}">
+            <td><span th:text="${stock.name}"> Name </span></td>
+            <td><span th:text="'$' + ${stock.currentPrice}"> Price </span></td>
+            <td><span th:text="${stock.lastUpdate}"> Last update </span></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

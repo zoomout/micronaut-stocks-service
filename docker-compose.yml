@@ -4,7 +4,7 @@ services:
   micronaut-stocks-service:
     container_name: micronaut-stocks-service
     build:
-      dockerfile: Dockerfile
+      dockerfile: stocks-service/Dockerfile
       context: ./
     environment:
       KAFKA_HOST: ${KAFKA_HOST}
