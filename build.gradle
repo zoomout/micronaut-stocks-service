@@ -6,21 +6,15 @@ plugins {
 version "1.0"
 group "com.bogdan"
 
-repositories {
-    mavenCentral()
-    maven { url "https://jcenter.bintray.com" }
-}
+def junitVersion = "5.5.2"
 
 subprojects {
 
     apply plugin: 'java'
     apply plugin: 'jacoco'
-    apply plugin: 'application'
+
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'net.ltgt.apt-eclipse'
-
-    version "1.0"
-    group "com.bogdan"
 
     repositories {
         mavenCentral()
@@ -31,25 +25,18 @@ subprojects {
         developmentOnly
     }
 
-    def junitVersion = "5.5.2"
-
     dependencies {
         annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
         annotationProcessor "io.micronaut:micronaut-inject-java"
         annotationProcessor "io.micronaut:micronaut-validation"
-        annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+
         implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
         implementation "io.micronaut:micronaut-inject"
         implementation "io.micronaut:micronaut-validation"
         implementation "io.micronaut:micronaut-runtime"
         implementation "io.micronaut.configuration:micronaut-kafka"
-        implementation "io.micronaut:micronaut-http-server-netty"
-        implementation "io.micronaut:micronaut-http-client"
         implementation group: 'io.micronaut.data', name: 'micronaut-data-runtime', version: '1.0.0.M4'
-        implementation "io.micronaut:micronaut-views"
-        implementation "io.swagger.core.v3:swagger-annotations"
         runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
-        runtimeOnly 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
 
         testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
         testAnnotationProcessor "io.micronaut:micronaut-inject-java"
@@ -97,7 +84,7 @@ subprojects {
                 fileTree(
                         dir: it,
                         exclude: [
-                                '**/Application**',
+                                '**/**Application**',
                         ]
                 )
             })
@@ -111,26 +98,33 @@ subprojects {
         mergeServiceFiles()
     }
 
-    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
-
     test.classpath += configurations.developmentOnly
-    run.classpath += configurations.developmentOnly
 }
 
 project(':stocks-domain') {
-    mainClassName = "com.bogdan.Application"
 }
 
 project(':stocks-service') {
+    apply plugin: 'application'
     mainClassName = "com.bogdan.StocksServiceApplication"
     dependencies {
         implementation project(':stocks-domain')
+        annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+        implementation "io.micronaut:micronaut-http-server-netty"
+        implementation "io.swagger.core.v3:swagger-annotations"
+        implementation "io.micronaut:micronaut-views"
+        runtimeOnly 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
     }
+    run.classpath += configurations.developmentOnly
+    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 }
 
 project(':stocks-events-listener') {
+    apply plugin: 'application'
     mainClassName = "com.bogdan.StocksEventListenerApplication"
     dependencies {
         implementation project(':stocks-domain')
     }
+    run.classpath += configurations.developmentOnly
+    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 }
