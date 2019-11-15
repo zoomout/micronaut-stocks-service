@@ -21,7 +21,7 @@ export KAFKA_HOST=$(resolve_host_ip)
 if [[ "${1}" == "up" ]]; then
     echo "KAFKA_HOST=${KAFKA_HOST}"
     ./gradlew assemble
-    docker-compose -f docker-compose.yml up -d
+    docker-compose -f docker-compose.yml up --build -d
 elif [[ "${1}" == "down" ]]; then
     docker-compose -f docker-compose.yml down
 else
