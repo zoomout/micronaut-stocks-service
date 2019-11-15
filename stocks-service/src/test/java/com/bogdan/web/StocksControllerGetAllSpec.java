@@ -1,7 +1,6 @@
 package com.bogdan.web;
 
 import com.bogdan.events.StocksEventClient;
-import com.bogdan.events.StocksEventListener;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.restassured.response.ValidatableResponse;
@@ -22,12 +21,7 @@ class StocksControllerGetAllSpec extends BaseStocksControllerSpec {
 
   @MockBean(StocksEventClient.class)
   public StocksEventClient stocksEventClient() {
-    return  stocksEventClient;
-  }
-
-  @MockBean(StocksEventListener.class)
-  public StocksEventListener stocksEventListener() {
-    return  stocksEventListener;
+    return stocksEventClient;
   }
 
   @Test

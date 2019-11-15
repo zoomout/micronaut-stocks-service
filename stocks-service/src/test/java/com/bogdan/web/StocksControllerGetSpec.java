@@ -1,7 +1,6 @@
 package com.bogdan.web;
 
 import com.bogdan.events.StocksEventClient;
-import com.bogdan.events.StocksEventListener;
 import com.bogdan.time.TimeMachine;
 import com.bogdan.time.TimeMachineImpl;
 import io.micronaut.test.annotation.MicronautTest;
@@ -29,12 +28,7 @@ class StocksControllerGetSpec extends BaseStocksControllerSpec {
 
   @MockBean(StocksEventClient.class)
   public StocksEventClient stocksEventClient() {
-    return  stocksEventClient;
-  }
-
-  @MockBean(StocksEventListener.class)
-  public StocksEventListener stocksEventListener() {
-    return  stocksEventListener;
+    return stocksEventClient;
   }
 
   @Test
