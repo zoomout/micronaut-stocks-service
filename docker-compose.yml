@@ -10,6 +10,13 @@ services:
       KAFKA_HOST: ${KAFKA_HOST}
     ports:
       - 10080:8080
+  micronaut-events-listener:
+    container_name: micronaut-events-listener
+    build:
+      dockerfile: stocks-events-listener/Dockerfile
+      context: ./
+    environment:
+      KAFKA_HOST: ${KAFKA_HOST}
   micronaut-zookeeper:
     container_name: micronaut-zookeeper
     image: wurstmeister/zookeeper

@@ -11,8 +11,8 @@ import io.swagger.v3.oas.annotations.info.Info;
         description = "Demo project using Micronaut framework "
     )
 )
-public class Application {
+public class StocksServiceApplication {
   public static void main(String[] args) {
-    Micronaut.run(Application.class);
+    Micronaut.run(StocksServiceApplication.class);
   }
 }

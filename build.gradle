@@ -122,14 +122,14 @@ project(':stocks-domain') {
 }
 
 project(':stocks-service') {
-    mainClassName = "com.bogdan.Application"
+    mainClassName = "com.bogdan.StocksServiceApplication"
     dependencies {
         implementation project(':stocks-domain')
     }
 }
 
 project(':stocks-events-listener') {
-    mainClassName = "com.bogdan.Application"
+    mainClassName = "com.bogdan.StocksEventListenerApplication"
     dependencies {
         implementation project(':stocks-domain')
     }
