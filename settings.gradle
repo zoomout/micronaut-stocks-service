@@ -1,1 +1,2 @@
-include 'stocks-domain', 'stocks-service', 'stocks-events-listener'
+rootProject.name = 'stocks'
+include 'stocks-domain', 'stocks-service', 'stocks-web-ui', 'stocks-events-listener'

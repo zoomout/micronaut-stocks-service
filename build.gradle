@@ -3,21 +3,20 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
 }
 
-version "1.0"
-group "com.bogdan"
-
 subprojects {
 
-    apply plugin: 'java'
-    apply plugin: 'jacoco'
-
-    apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'net.ltgt.apt-eclipse'
+    version "1.0"
+    group "com.bogdan"
 
     repositories {
         mavenCentral()
         maven { url "https://jcenter.bintray.com" }
     }
+
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'net.ltgt.apt-eclipse'
 
     configurations {
         developmentOnly
@@ -64,6 +63,7 @@ subprojects {
         testLogging {
             events "passed", "skipped", "failed"
         }
+        maxParallelForks = Runtime.runtime.availableProcessors()
     }
 
     tasks.withType(JavaCompile) {
@@ -97,32 +97,4 @@ subprojects {
     }
 
     test.classpath += configurations.developmentOnly
-}
-
-project(':stocks-domain') {
-}
-
-project(':stocks-service') {
-    apply plugin: 'application'
-    mainClassName = "com.bogdan.StocksServiceApplication"
-    dependencies {
-        implementation project(':stocks-domain')
-        annotationProcessor "io.micronaut.configuration:micronaut-openapi"
-        implementation "io.micronaut:micronaut-http-server-netty"
-        implementation "io.swagger.core.v3:swagger-annotations"
-        implementation "io.micronaut:micronaut-views"
-        runtimeOnly 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
-    }
-    run.classpath += configurations.developmentOnly
-    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
-}
-
-project(':stocks-events-listener') {
-    apply plugin: 'application'
-    mainClassName = "com.bogdan.StocksEventListenerApplication"
-    dependencies {
-        implementation project(':stocks-domain')
-    }
-    run.classpath += configurations.developmentOnly
-    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 }

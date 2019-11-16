@@ -1,0 +1,12 @@
+project(':stocks-service') {
+    apply plugin: 'application'
+    mainClassName = "com.bogdan.StocksServiceApplication"
+    dependencies {
+        implementation project(':stocks-domain')
+        annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+        implementation "io.micronaut:micronaut-http-server-netty"
+        implementation "io.swagger.core.v3:swagger-annotations"
+    }
+    run.classpath += configurations.developmentOnly
+    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+}

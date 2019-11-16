@@ -23,7 +23,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:if="${stocks.empty}">
+        <tr th:if="${stocks == null}">
             <td colspan="20"> No stocks available</td>
         </tr>
         <tr th:each="stock : ${stocks}">

@@ -1,29 +1,31 @@
 package com.bogdan.web;
 
-import com.bogdan.events.StocksEventClient;
+import com.bogdan.client.StocksServiceClient;
+import com.bogdan.dto.StocksDto;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @MicronautTest
-public class StocksListViewControllerTest extends BaseStocksControllerSpec {
+class StocksListViewControllerTest extends BaseStocksControllerSpec {
 
-  @MockBean(StocksEventClient.class)
-  public StocksEventClient stocksEventClient() {
-    return stocksEventClient;
+  @MockBean(StocksServiceClient.class)
+  public StocksServiceClient stocksServiceClient() {
+    return stocksServiceClient;
   }
 
   @Test
   void testStocksListView_shouldReturnSuccessfulResponse_withPayload() {
     int amountOfStocks = 2;
-    stocksApiClient.createMultipleStocks(amountOfStocks);
-
-    ValidatableResponse response = when().get("/").then();
+    mockStocksServiceClient(new StocksDto(amountOfStocks, new ArrayList<>()));
+    ValidatableResponse response = when().get(baseUri()).then();
     response.statusCode(is(200));
     response.assertThat().body("html.body.section.h1.span", equalTo(String.valueOf(amountOfStocks)));
   }

@@ -26,23 +26,25 @@ class StocksControllerGetAllSpec extends BaseStocksControllerSpec {
 
   @Test
   void testGetAllStocks_withPagination_andExpectNonEmptyResponse() {
-    List<JSONObject> createdStocks = stocksApiClient.createMultipleStocks(5);
+    int amountOfStocks = 5;
+    List<JSONObject> createdStocks = stocksApiClient.createMultipleStocks(amountOfStocks);
     int pageSize = 2;
 
     ValidatableResponse response = when().get(stocksApi() + "?page=1&size=" + pageSize).then();
 
-    assertThat(sizeOfArrayIn(response), is(pageSize));
+    assertThat(response.extract().jsonPath().getInt("total"), is(amountOfStocks));
+    assertThat(sizeOfStocksArray(response), is(pageSize));
     List<Map> retrievedStocks = extractRetrievedStocksFrom(response);
     assertStockIdsAreEqual(retrievedStocks.get(0), createdStocks.get(2));
     assertStockIdsAreEqual(retrievedStocks.get(1), createdStocks.get(3));
   }
 
-  private int sizeOfArrayIn(final ValidatableResponse response) {
-    return response.extract().jsonPath().getList("").size();
+  private int sizeOfStocksArray(final ValidatableResponse response) {
+    return response.extract().jsonPath().getList("stocks").size();
   }
 
   private List<Map> extractRetrievedStocksFrom(final ValidatableResponse response) {
-    return response.extract().jsonPath().getList("", Map.class);
+    return response.extract().jsonPath().getList("stocks", Map.class);
   }
 
   private void assertStockIdsAreEqual(final Map actual, final JSONObject expected) {
@@ -62,7 +64,7 @@ class StocksControllerGetAllSpec extends BaseStocksControllerSpec {
           "?size=0"
       })
   void testGetAllStocks_withPagination_andExpectEmptyResponse(String pagination) {
-    when().get(stocksApi() + pagination).then().body(is("[]"));
+    when().get(stocksApi() + pagination).then().body(is("{\"total\":0}"));
   }
 
 }

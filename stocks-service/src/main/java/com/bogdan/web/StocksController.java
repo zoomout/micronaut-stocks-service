@@ -2,6 +2,7 @@ package com.bogdan.web;
 
 import com.bogdan.dto.CreateStockDto;
 import com.bogdan.dto.StockDto;
+import com.bogdan.dto.StocksDto;
 import com.bogdan.dto.UpdateStockDto;
 import com.bogdan.service.StocksService;
 import io.micronaut.data.model.Pageable;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.net.URI;
+import java.util.List;
 
 @Validated
 @Controller("/api/stocks")
@@ -25,7 +27,9 @@ public class StocksController {
   @Get
   @Produces(MediaType.APPLICATION_JSON)
   public HttpResponse getPage(@Valid Pageable pageable) {
-    return HttpResponse.ok(stocksService.getStocks(pageable.getOffset(), pageable.getSize()));
+    int total = stocksService.getTotal();
+    List<StockDto> stocks = stocksService.getStocks(pageable.getOffset(), pageable.getSize());
+    return HttpResponse.ok(new StocksDto(total, stocks));
   }
 
   @Get(value = "/{id}")
