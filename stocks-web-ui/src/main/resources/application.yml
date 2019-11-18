@@ -1,0 +1,11 @@
+micronaut:
+  application:
+    name: stocks-web-ui
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: "/public/**"
+        paths: "classpath:public"
+stocks-service:
+  url: ${STOCKS_SERVICE_HOST_AND_PORT}

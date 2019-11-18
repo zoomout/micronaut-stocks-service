@@ -1,0 +1,6 @@
+micronaut:
+  application:
+    name: stocks-events-listener
+kafka:
+  bootstrap:
+    servers: ${KAFKA_HOST:localhost}:10092

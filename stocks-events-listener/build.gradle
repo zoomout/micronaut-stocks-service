@@ -1,0 +1,9 @@
+project(':stocks-events-listener') {
+    apply plugin: 'application'
+    mainClassName = "com.bogdan.StocksEventListenerApplication"
+    dependencies {
+        implementation project(':stocks-domain')
+    }
+    run.classpath += configurations.developmentOnly
+    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+}
