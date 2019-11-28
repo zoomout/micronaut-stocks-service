@@ -6,14 +6,14 @@ import com.bogdan.time.TimeMachine;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Singleton
 public class StocksRepositoryImpl implements StocksRepository {
 
-  private List<StockEntity> stocks = new CopyOnWriteArrayList<>();
+  private List<StockEntity> stocks = new ArrayList<>();
 
   @Inject
   private TimeMachine timeMachine;
